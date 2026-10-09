@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Excluir {{ kind }} · Ad Rock Certificates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="dashboard">
+    <h1>Excluir {{ kind }}</h1>
+    <section class="panel delete-panel">
+      <h2>{{ item.name if kind == 'cliente' else item.title }}</h2>
+      <p>Esta ação apagará permanentemente do sistema:</p>
+      <ul class="item-list">
+        {% if kind == 'cliente' %}<li>{{ summary.events }} evento(s)</li>{% endif %}
+        <li>{{ summary.imports }} importação(ões) CSV</li>
+        <li>{{ summary.participants }} participante(s)</li>
+        <li>{{ summary.batches }} lote(s) de geração</li>
+        <li>{{ summary.certificates }} certificado(s), incluindo PDFs e ZIPs gerados</li>
+      </ul>
+      <p>Os templates PDF permanecem no catálogo para outros eventos.</p>
+      <p class="muted small">Backups anteriores ainda podem conter esses dados até a expiração das cópias.</p>
+      <form method="post" action="{{ action }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label class="confirm-label"><input type="checkbox" name="confirm" value="yes" required> Entendi que esta exclusão é permanente.</label>
+        <button class="danger-button" type="submit">Excluir {{ kind }} e dados</button>
+      </form>
+      <p><a href="{{ cancel }}">Cancelar e voltar</a></p>
+    </section>
+  </main>
+</body>
+</html>

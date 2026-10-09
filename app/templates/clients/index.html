@@ -22,7 +22,7 @@
       {% if clients %}
         <ul class="item-list">
         {% for client in clients %}
-          <li><a href="{{ url_for('clients.detail', client_id=client.id) }}">{{ client.name }}</a></li>
+          <li><a href="{{ url_for('clients.detail', client_id=client.id) }}">{{ client.name }}</a> <span class="muted small">· Abrir para editar ou excluir</span></li>
         {% endfor %}
         </ul>
       {% else %}

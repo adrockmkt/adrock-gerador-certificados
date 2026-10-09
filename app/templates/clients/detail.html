@@ -10,6 +10,16 @@
   {% include 'partials/header.html' %}
   <main class="dashboard">
     <h1>{{ client.name }}</h1>
+    <section class="panel">
+      <h2>Editar cliente</h2>
+      <form method="post" action="{{ url_for('clients.edit_client', client_id=client.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label for="edit-client-name">Nome do cliente</label>
+        <input id="edit-client-name" name="name" value="{{ client.name }}" maxlength="200" required>
+        <button type="submit">Salvar nome</button>
+      </form>
+      <p><a class="danger-link" href="{{ url_for('clients.confirm_delete_client', client_id=client.id) }}">Excluir cliente e todos os eventos</a></p>
+    </section>
     <form class="panel" method="post" action="{{ url_for('clients.create_event', client_id=client.id) }}">
       <h2>Novo evento</h2>
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
@@ -22,7 +32,7 @@
       {% if events %}
         <ul class="item-list">
         {% for event in events %}
-          <li><a href="{{ url_for('clients.event_detail', event_id=event.id) }}">{{ event.title }}</a></li>
+          <li><a href="{{ url_for('clients.event_detail', event_id=event.id) }}">{{ event.title }}</a> <span class="muted small">· Abrir para editar ou excluir</span></li>
         {% endfor %}
         </ul>
       {% else %}

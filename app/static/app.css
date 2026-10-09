@@ -36,6 +36,12 @@ form:not(.header-logout) > button:not(.text-button), .action-link { display: inl
 form:not(.header-logout) > button:not(.text-button) { margin-top: 22px; }
 form:not(.header-logout) > button:not(.text-button):hover, .action-link:hover { color: white; background: #e27b00; border-color: #e27b00; }
 .error { padding: 13px 15px; color: #8c2721; background: #fff1f0; border: 1px solid #f1b9b5; border-radius: 12px; }
+.danger-link { color: #a82d2d; font-weight: 700; }
+.danger-link:hover { color: #7d1e1e; }
+form:not(.header-logout) > button.danger-button { color: white; background: #a82d2d; border-color: #a82d2d; }
+form:not(.header-logout) > button.danger-button:hover { background: #7d1e1e; border-color: #7d1e1e; }
+.confirm-label { display: flex; align-items: center; gap: 6px; }
+.confirm-label input[type="checkbox"] { flex: none; margin: 0; }
 .notice { padding: 13px 15px; color: #704b09; background: #fff2d1; border: 1px solid #f1d48f; border-radius: 12px; }
 .next-step { max-width: 780px; margin: 22px 0; padding: 20px 24px; background: #eef9f2; border: 1px solid #9ed7b4; border-radius: 17px; }
 .next-step strong { display: block; color: #176843; }

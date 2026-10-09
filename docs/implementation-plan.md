@@ -19,6 +19,6 @@ Na etapa 3, solicitar o PDF FIEP original, de uma página e sem senha. Na etapa 
 
 ## Progresso local
 
-- Etapas 1 a 7 implementadas e verificadas com 48 testes automatizados. O editor e a prévia foram conferidos com o PDF FIEP real, incluindo um nome extenso. A planilha modelo com `Nome` e `Sobrenome` e o arquivo de referência do Illustrator estão disponíveis por download autenticado.
+- Etapas 1 a 7 implementadas e verificadas com 51 testes automatizados. O editor e a prévia foram conferidos com o PDF FIEP real, incluindo um nome extenso. A planilha modelo com `Nome` e `Sobrenome` e o arquivo de referência do Illustrator estão disponíveis por download autenticado.
 - A posição e a tipografia de cada novo template ainda devem ser conferidas pelo administrador na prévia antes de gerar o lote.
 - A etapa 8 foi iniciada na VPS: serviço, NGINX, HTTPS, login e downloads privados foram verificados pelo domínio. O backup local diário foi restaurado em pasta temporária e o SQLite passou em `PRAGMA integrity_check`. Ainda faltam cópia externa, medição de lotes com dados reais e política de retenção aprovada.

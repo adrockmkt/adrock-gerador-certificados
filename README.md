@@ -6,7 +6,7 @@ A interface segue a linguagem visual **Ad Rock Console UI** do projeto organizac
 
 ## Estado atual
 
-O fluxo está implementado: login, clientes e eventos, upload privado de template, editor visual, prévia PDF, importação CSV com revisão e geração de lotes. O PDF real da FIEP foi recebido e usado na conferência visual local. Há 48 testes automatizados. A aplicação está publicada em [mobiledelivery.com.br/gerador-certificados/](https://mobiledelivery.com.br/gerador-certificados/).
+O fluxo está implementado: login, clientes e eventos, upload privado de template, editor visual, prévia PDF, importação CSV com revisão e geração de lotes. O PDF real da FIEP foi recebido e usado na conferência visual local. Há 51 testes automatizados. A aplicação está publicada em [mobiledelivery.com.br/gerador-certificados/](https://mobiledelivery.com.br/gerador-certificados/).
 
 ## Instalação local
 
@@ -33,6 +33,8 @@ O SQLite fica em `instance/certificates.sqlite3` e os arquivos privados em `inst
 4. Abra **Prévia PDF** no editor e confira o resultado real. Se necessário, ajuste e salve uma nova versão. A emissão usa a versão salva mais recente no momento em que o lote é criado.
 5. No evento, abra **Participantes e importação CSV**. Baixe a planilha modelo (.xlsx), preencha as colunas `Nome` e `Sobrenome` e exporte a aba `Participantes` como CSV UTF-8. Envie o CSV (com ou sem BOM), separado por vírgula ou ponto e vírgula. Escolha as colunas de nome e sobrenome, revise linhas inválidas e duplicadas e confirme a importação.
 6. Abra **Gerar certificados**, confirme que conferiu a prévia e gere o lote. Baixe os PDFs individuais ou o ZIP. O resultado registra separadamente os nomes que não couberam no campo.
+
+Nas páginas de cliente e evento é possível alterar o nome ou abrir a confirmação de exclusão. Excluir um evento remove suas importações, participantes, lotes, certificados e arquivos CSV/PDF/ZIP gerados. Excluir um cliente faz isso para todos os seus eventos. Templates PDF permanecem no catálogo, pois podem ser reutilizados por outros eventos. Backups anteriores ainda podem conter os dados até sua expiração.
 
 O limite atual é 5 MB por upload, 500 linhas de dados por CSV e 500 participantes por lote. Templates com rotação de página são recusados até que o editor suporte essa geometria. Estão disponíveis Helvetica Regular e as famílias abertas Montserrat, Lato e Poppins em Regular e Semibold. As licenças OFL ficam junto aos arquivos de fonte. O tamanho de fonte é reduzido até o mínimo configurado quando necessário.
 

@@ -12,6 +12,16 @@
     <h1>{{ event.title }}</h1>
     <p>Cliente: {{ client.name }}</p>
     <section class="panel">
+      <h2>Editar evento</h2>
+      <form method="post" action="{{ url_for('clients.edit_event', event_id=event.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label for="edit-event-title">Nome do evento</label>
+        <input id="edit-event-title" name="title" value="{{ event.title }}" maxlength="200" required>
+        <button type="submit">Salvar nome</button>
+      </form>
+      <p><a class="danger-link" href="{{ url_for('clients.confirm_delete_event', event_id=event.id) }}">Excluir evento e todos os dados</a></p>
+    </section>
+    <section class="panel">
       <h2>Template PDF</h2>
       {% if template %}
         <p>Selecionado: <a href="{{ url_for('templates_pdf.original_pdf', template_id=template.id) }}" target="_blank" rel="noopener">{{ template.name }}</a></p>
