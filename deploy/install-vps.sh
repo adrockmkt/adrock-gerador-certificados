@@ -29,6 +29,10 @@ install -d -m 0700 -o root -g root /etc/adrock
 git clone --branch main --depth 1 https://github.com/adrockmkt/adrock-gerador-certificados.git "$app_dir"
 python3 -m venv "$app_dir/.venv"
 "$app_dir/.venv/bin/python" -m pip install --no-cache-dir -e "${app_dir}[production]"
+# O umask 077 protege os segredos, mas o usuário de serviço precisa ler o código
+# e atravessar os diretórios do ambiente virtual. Não altera /etc nem /var/lib.
+chmod -R a+rX "$app_dir"
+runuser -u certgen -- test -x "$app_dir/.venv/bin/gunicorn"
 cd "$app_dir"
 "$app_dir/.venv/bin/python" -m unittest discover -s tests -q
 
