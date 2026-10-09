@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Participantes · {{ event.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="dashboard">
+    <h1>Participantes · {{ event.title }}</h1>
+    <form class="panel" method="post" action="{{ url_for('imports.upload', event_id=event.id) }}" enctype="multipart/form-data">
+      <h2>Importar CSV</h2>
+      <p>Baixe a <a href="{{ url_for('imports.participants_spreadsheet') }}">planilha modelo (.xlsx)</a>, preencha as colunas Nome e Sobrenome e exporte a aba Participantes como CSV UTF-8. Depois, envie o CSV abaixo.</p>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label for="csv-file">Arquivo CSV UTF-8 exportado da planilha</label>
+      <input id="csv-file" name="csv" type="file" accept=".csv,text/csv" required>
+      <button type="submit">Selecionar colunas</button>
+    </form>
+    <section class="panel">
+      <h2>Importados ({{ people|length }})</h2>
+      {% if people %}<ol class="item-list">{% for person in people %}<li>{{ person.first_name }} {{ person.last_name }}</li>{% endfor %}</ol>
+      {% else %}<p>Nenhum participante importado.</p>{% endif %}
+    </section>
+  </main>
+</body>
+</html>
+

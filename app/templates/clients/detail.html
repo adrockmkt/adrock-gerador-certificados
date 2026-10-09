@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ client.name }} · Ad Rock Certificates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="dashboard">
+    <h1>{{ client.name }}</h1>
+    <form class="panel" method="post" action="{{ url_for('clients.create_event', client_id=client.id) }}">
+      <h2>Novo evento</h2>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label for="event-title">Nome do evento</label>
+      <input id="event-title" name="title" maxlength="200" required>
+      <button type="submit">Cadastrar evento</button>
+    </form>
+    <section class="panel">
+      <h2>Eventos</h2>
+      {% if events %}
+        <ul class="item-list">
+        {% for event in events %}
+          <li><a href="{{ url_for('clients.event_detail', event_id=event.id) }}">{{ event.title }}</a></li>
+        {% endfor %}
+        </ul>
+      {% else %}
+        <p>Nenhum evento cadastrado.</p>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>
+

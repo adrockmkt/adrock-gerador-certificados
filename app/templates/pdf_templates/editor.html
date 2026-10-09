@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editar {{ template.name }} · Ad Rock Certificates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="editor-layout" id="editor"
+        data-pdf-url="{{ url_for('templates_pdf.original_pdf', template_id=template.id) }}"
+        data-save-url="{{ url_for('templates_pdf.save_version', template_id=template.id) }}"
+        data-csrf="{{ csrf_token }}"
+        data-page-width="{{ template.page_width_pt }}"
+        data-page-height="{{ template.page_height_pt }}"
+        data-fields="{{ fields|tojson|forceescape }}">
+    <section class="editor-workspace">
+      <div class="editor-heading">
+        <div><h1>{{ template.name }}</h1><p class="muted">Arraste os campos sobre o PDF. As medidas são salvas em pontos do documento.</p></div>
+        <button id="save-fields" type="button">Salvar configuração</button>
+      </div>
+      <div class="pdf-stage"><div class="pdf-page" id="pdf-page"><canvas id="pdf-canvas"></canvas><div id="field-layer"></div></div></div>
+      <p id="editor-status" role="status">Versão atual: {{ version }}</p>
+    </section>
+    <aside class="editor-sidebar">
+      <h2>Campos</h2>
+      <div class="add-field">
+        <label for="new-field-key">Campo dinâmico</label>
+        <select id="new-field-key">
+          <option value="nome_completo">Nome completo</option>
+          <option value="nome">Nome</option>
+          <option value="sobrenome">Sobrenome</option>
+        </select>
+        <button id="add-field" type="button">Adicionar campo</button>
+      </div>
+      <div id="field-list" class="field-list"></div>
+      <div id="field-properties" hidden>
+        <h2>Propriedades</h2>
+        <label for="field-x">Posição X (pt)</label><input id="field-x" type="number" min="0" step="0.1">
+        <label for="field-y">Posição Y (pt, base)</label><input id="field-y" type="number" min="0" step="0.1">
+        <label for="field-width">Largura (pt)</label><input id="field-width" type="number" min="1" step="0.1">
+        <label for="field-height">Altura da área (pt)</label><input id="field-height" type="number" min="1" step="0.1">
+        <label for="field-lines">Máximo de linhas</label>
+        <select id="field-lines"><option value="1">Uma linha</option><option value="2">Duas linhas</option></select>
+        <label for="field-font">Fonte</label>
+        <select id="field-font"><option value="Helvetica">Helvetica</option><option value="Montserrat">Montserrat</option><option value="Lato">Lato</option><option value="Poppins">Poppins</option></select>
+        <label for="field-weight">Peso</label>
+        <select id="field-weight"><option value="regular">Regular</option><option value="semibold">Semibold</option></select>
+        <label for="field-size">Tamanho da fonte (pt)</label><input id="field-size" type="number" min="6" max="72" step="0.5">
+        <label for="field-min-size">Tamanho mínimo (pt)</label><input id="field-min-size" type="number" min="6" max="72" step="0.5">
+        <label for="field-color">Cor</label><input id="field-color" type="color">
+        <label for="field-align">Alinhamento</label>
+        <select id="field-align"><option value="left">Esquerda</option><option value="center">Centro</option><option value="right">Direita</option></select>
+        <button id="remove-field" class="danger-button" type="button">Remover campo</button>
+      </div>
+      <p class="muted small">O nome longo pode reduzir de tamanho ou ocupar duas linhas dentro da altura definida. Confira a prévia PDF final antes de emitir o lote.</p>
+      <form class="preview-form" method="post" action="{{ url_for('templates_pdf.preview', template_id=template.id) }}" target="_blank">
+        <h2>Prévia PDF</h2>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label for="preview-first">Nome</label><input id="preview-first" name="nome" value="Maria" required>
+        <label for="preview-last">Sobrenome</label><input id="preview-last" name="sobrenome" value="Silva" required>
+        <button type="submit">Abrir prévia real</button>
+      </form>
+    </aside>
+  </main>
+  <script type="module" src="{{ url_for('static', filename='editor.js') }}"></script>
+</body>
+</html>
+

@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+    "vendor:pdfjs": "mkdir -p app/static/vendor/pdfjs && cp node_modules/pdfjs-dist/build/pdf.mjs node_modules/pdfjs-dist/build/pdf.worker.mjs node_modules/pdfjs-dist/LICENSE app/static/vendor/pdfjs/"
+  },
+  "devDependencies": {
+    "pdfjs-dist": "6.4.299"
+  }
+}

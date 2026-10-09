@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Templates · Ad Rock Certificates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="dashboard">
+    <h1>Templates PDF</h1>
+    <section class="panel">
+      <h2>Referência de design</h2>
+      <p>Baixe o <a href="{{ url_for('templates_pdf.illustrator_reference') }}">modelo do certificado no Illustrator (.ai)</a> para consultar ou adaptar o layout. Para gerar certificados, envie abaixo um PDF de uma página sem o nome do participante.</p>
+    </section>
+    <form class="panel" method="post" action="{{ url_for('templates_pdf.create') }}" enctype="multipart/form-data">
+      <h2>Enviar template</h2>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label for="template-name">Nome do template</label>
+      <input id="template-name" name="name" maxlength="200" required>
+      <label for="template-pdf">PDF original de uma página, sem senha</label>
+      <input id="template-pdf" name="pdf" type="file" accept="application/pdf,.pdf" required>
+      <button type="submit">Enviar PDF</button>
+    </form>
+    <section class="panel">
+      <h2>Templates disponíveis</h2>
+      {% if templates %}
+        <ul class="item-list">
+          {% for template in templates %}
+            <li><a href="{{ url_for('templates_pdf.edit', template_id=template.id) }}">{{ template.name }}</a> · {{ template.page_width_pt|round(1) }} × {{ template.page_height_pt|round(1) }} pt · <a href="{{ url_for('templates_pdf.original_pdf', template_id=template.id) }}" target="_blank" rel="noopener">PDF de trabalho</a> · <a href="{{ url_for('templates_pdf.source_pdf', template_id=template.id) }}">PDF enviado</a></li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>Nenhum template enviado.</p>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>
+

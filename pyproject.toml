@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adrock-certificate-generator"
+version = "0.1.0"
+description = "Painel administrativo para emissão de certificados PDF"
+requires-python = ">=3.9"
+dependencies = [
+    "Flask>=3.1,<4",
+    "SQLAlchemy>=2,<3",
+    "pypdf>=6,<7",
+    "reportlab>=4,<5",
+]
+
+[project.optional-dependencies]
+production = ["gunicorn>=23,<24"]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.setuptools.package-data]
+app = ["templates/**/*.html", "static/*", "static/vendor/pdfjs/*", "static/fonts/montserrat/*", "static/fonts/lato/*", "static/fonts/poppins/*", "assets/*"]
+
+

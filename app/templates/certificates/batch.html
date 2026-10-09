@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lote {{ batch.id }} · Ad Rock Certificates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="dashboard">
+    <h1>Lote {{ batch.id }}</h1>
+    <p>Template versão {{ version.number }} · {{ batch.success_count }} certificados gerados · {{ batch.error_count }} falhas</p>
+    {% if batch.zip_file_key %}<p><a class="action-link" href="{{ url_for('certificates.download_zip', batch_id=batch.id) }}">Baixar ZIP</a></p>{% endif %}
+    <section class="panel"><h2>Resultados</h2><ul>
+      {% for certificate, participant in rows %}
+        <li>{{ participant.first_name }} {{ participant.last_name }} — {% if certificate.status == 'completed' %}<a href="{{ url_for('certificates.download_certificate', certificate_id=certificate.id) }}">Baixar PDF</a>{% else %}Falha: {{ certificate.error }}{% endif %}</li>
+      {% endfor %}
+    </ul></section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ event.title }} · Ad Rock Certificates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="dashboard">
+    <h1>{{ event.title }}</h1>
+    <p>Cliente: {{ client.name }}</p>
+    <section class="panel">
+      <h2>Template PDF</h2>
+      {% if template %}
+        <p>Selecionado: <a href="{{ url_for('templates_pdf.original_pdf', template_id=template.id) }}" target="_blank" rel="noopener">{{ template.name }}</a></p>
+      {% else %}
+        <p>Nenhum template selecionado.</p>
+      {% endif %}
+      {% if templates %}
+        <form method="post" action="{{ url_for('clients.assign_template', event_id=event.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <label for="template-id">Selecionar ou reutilizar template</label>
+          <select id="template-id" name="template_id" required>
+            {% for item in templates %}<option value="{{ item.id }}" {% if template and item.id == template.id %}selected{% endif %}>{{ item.name }}</option>{% endfor %}
+          </select>
+          <button type="submit">Associar template</button>
+        </form>
+      {% endif %}
+      <p><a href="{{ url_for('templates_pdf.index') }}">Enviar novo template</a></p>
+    </section>
+    <p><a class="action-link" href="{{ url_for('imports.participants', event_id=event.id) }}">Participantes e importação CSV</a></p>
+    <p><a class="action-link" href="{{ url_for('certificates.generate_page', event_id=event.id) }}">Gerar certificados</a></p>
+  </main>
+</body>
+</html>
+

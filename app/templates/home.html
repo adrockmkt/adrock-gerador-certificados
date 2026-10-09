@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel · Ad Rock Certificates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="dashboard">
+    <p class="eyebrow">VISÃO GERAL</p>
+    <h1>Painel administrativo</h1>
+    <p class="muted">Prepare os modelos, organize participantes e emita certificados.</p>
+    <div class="home-grid">
+      <a class="home-card" href="{{ url_for('clients.index') }}"><span class="home-card-icon">01</span><strong>Clientes e eventos</strong><span>Organize a emissão por cliente e curso.</span><span class="home-card-action">Abrir clientes →</span></a>
+      <a class="home-card" href="{{ url_for('templates_pdf.index') }}"><span class="home-card-icon">02</span><strong>Templates PDF</strong><span>Envie a arte e configure a posição do nome.</span><span class="home-card-action">Gerenciar templates →</span></a>
+    </div>
+  </main>
+</body>
+</html>
+

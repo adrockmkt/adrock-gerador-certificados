@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar · Ad Rock Certificates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body class="login-page">
+  <main class="auth-shell">
+    <section class="auth-intro" aria-label="Ad Rock Certificates">
+      <div class="auth-brand">
+        <img src="{{ url_for('static', filename='adrock-logo.png') }}" alt="Ad Rock Digital Mkt" width="72" height="72">
+        <div><p class="eyebrow">AD ROCK CONSOLE UI</p><h1>Ad Rock Certificates</h1><p class="muted">Certificados personalizados para cada cliente e evento.</p></div>
+      </div>
+      <div class="auth-features">
+        <div><strong>Clientes</strong><span>Organize eventos por cliente.</span></div>
+        <div><strong>Templates</strong><span>Posicione nomes sobre o PDF.</span></div>
+        <div><strong>Emissão</strong><span>Baixe PDFs e lotes em ZIP.</span></div>
+      </div>
+    </section>
+    <section class="login-card" aria-labelledby="login-title">
+      <p class="eyebrow">ÁREA ADMINISTRATIVA</p>
+      <h2 id="login-title">Entrar</h2>
+      <p class="muted">Acesse o painel com seu usuário e senha.</p>
+      {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+      <form method="post" action="{{ url_for('auth.login') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label for="username">Usuário</label>
+        <input id="username" name="username" type="text" autocomplete="username" maxlength="100" required autofocus>
+        <label for="password">Senha</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button type="submit">Entrar</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
+

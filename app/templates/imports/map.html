@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mapear CSV · Ad Rock Certificates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="dashboard">
+    <h1>Mapear colunas do CSV</h1>
+    <p>Selecione as colunas da planilha que contêm nome e sobrenome.</p>
+    <form class="panel" method="post" action="{{ url_for('imports.review', import_id=draft.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label for="first-col">Nome</label>
+      <select id="first-col" name="first_col" required>{% for header in draft.headers %}<option value="{{ header }}">{{ header }}</option>{% endfor %}</select>
+      <label for="last-col">Sobrenome</label>
+      <select id="last-col" name="last_col" required>{% for header in draft.headers %}<option value="{{ header }}" {% if 'sobrenome' in header|lower %}selected{% endif %}>{{ header }}</option>{% endfor %}</select>
+      <button type="submit">Revisar participantes</button>
+    </form>
+  </main>
+</body>
+</html>
+

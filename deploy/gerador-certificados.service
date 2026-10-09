@@ -1,0 +1,24 @@
+[Unit]
+Description=Ad Rock Certificate Generator
+After=network.target
+
+[Service]
+Type=simple
+User=certgen
+Group=certgen
+WorkingDirectory=/home/adrock/apps/gerador-certificados
+EnvironmentFile=/etc/adrock/gerador-certificados.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/home/adrock/apps/gerador-certificados/.venv/bin/gunicorn --workers 1 --threads 1 --bind 127.0.0.1:8012 --timeout 300 'app:create_app()'
+Restart=on-failure
+RestartSec=5
+UMask=0077
+StateDirectory=gerador-certificados
+StateDirectoryMode=0700
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/gerador-certificados
+
+[Install]
+WantedBy=multi-user.target

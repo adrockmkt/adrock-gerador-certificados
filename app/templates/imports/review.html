@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Revisar CSV · Ad Rock Certificates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="dashboard">
+    <h1>Revisar importação</h1>
+    <section class="panel">
+      <p>Participantes válidos: {{ valid|length }}</p>
+      <p>Linhas inválidas: {{ invalid|length }}</p>
+      <p>Duplicidades possíveis: {{ duplicates }}</p>
+      {% if duplicates %}<p class="notice">Nomes repetidos serão importados. Confira se representam pessoas diferentes antes de confirmar.</p>{% endif %}
+      {% if invalid %}<h2>Linhas inválidas</h2><ul>{% for row, reason in invalid %}<li>Linha {{ row }}: {{ reason }}</li>{% endfor %}</ul>{% endif %}
+      <h2>Participantes válidos</h2>
+      <ol class="item-list">{% for row, first, last in valid %}<li>{{ first }} {{ last }}</li>{% endfor %}</ol>
+      {% if valid %}
+        <form method="post" action="{{ url_for('imports.confirm', import_id=draft.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <input type="hidden" name="first_col" value="{{ first_col }}">
+          <input type="hidden" name="last_col" value="{{ last_col }}">
+          <button type="submit">Confirmar importação</button>
+        </form>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>
+

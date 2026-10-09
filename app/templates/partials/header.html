@@ -1,0 +1,15 @@
+<header class="app-header">
+  <a class="header-brand" href="{{ url_for('home') }}" aria-label="Ad Rock Certificates, painel">
+    <img src="{{ url_for('static', filename='adrock-logo.png') }}" alt="" width="52" height="52">
+    <span><strong>Ad Rock Certificates</strong><small>Gestão e emissão de certificados</small></span>
+  </a>
+  <nav class="header-nav" aria-label="Navegação principal">
+    <a href="{{ url_for('home') }}">Painel</a>
+    <a href="{{ url_for('clients.index') }}">Clientes</a>
+    <a href="{{ url_for('templates_pdf.index') }}">Templates</a>
+  </nav>
+  <form class="header-logout" method="post" action="{{ url_for('auth.logout') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button type="submit">Sair</button>
+  </form>
+</header>

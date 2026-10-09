@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gerar certificados · Ad Rock Certificates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="dashboard">
+    <h1>Gerar certificados</h1>
+    <section class="panel">
+      <p><strong>Participantes:</strong> {{ count }}</p>
+      {% if template and version %}
+        <p><strong>Template:</strong> {{ template.name }} · versão {{ version.number }}</p>
+        <p>Confira a prévia no <a href="{{ url_for('templates_pdf.edit', template_id=template.id) }}">editor do template</a> antes de gerar.</p>
+        {% if count > 0 and count <= 500 %}
+          <form method="post" action="{{ url_for('certificates.create_batch', event_id=event.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <input type="hidden" name="request_key" value="{{ request_key }}">
+            <label><input type="checkbox" name="confirmed_preview" value="yes" required> Conferi a prévia e autorizo a geração deste lote</label>
+            <button type="submit">Gerar {{ count }} certificados</button>
+          </form>
+        {% endif %}
+      {% else %}
+        <p>Associe e configure um template PDF para este evento.</p>
+      {% endif %}
+      {% if count == 0 %}<p><a href="{{ url_for('imports.participants', event_id=event.id) }}">Importar participantes</a> para liberar a geração.</p>{% endif %}
+    </section>
+    {% if batches %}
+      <section class="panel"><h2>Lotes anteriores</h2><ul>{% for batch in batches %}<li><a href="{{ url_for('certificates.batch_detail', batch_id=batch.id) }}">Lote {{ batch.id }}</a> · {{ batch.success_count }} gerados · {{ batch.error_count }} falhas</li>{% endfor %}</ul></section>
+    {% endif %}
+  </main>
+</body>
+</html>

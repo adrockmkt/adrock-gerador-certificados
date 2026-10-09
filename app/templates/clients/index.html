@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clientes · Ad Rock Certificates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="dashboard">
+    <h1>Clientes</h1>
+    <form class="panel" method="post" action="{{ url_for('clients.create') }}">
+      <h2>Novo cliente</h2>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label for="client-name">Nome do cliente</label>
+      <input id="client-name" name="name" maxlength="200" required>
+      <button type="submit">Cadastrar cliente</button>
+    </form>
+    <section class="panel">
+      <h2>Clientes cadastrados</h2>
+      {% if clients %}
+        <ul class="item-list">
+        {% for client in clients %}
+          <li><a href="{{ url_for('clients.detail', client_id=client.id) }}">{{ client.name }}</a></li>
+        {% endfor %}
+        </ul>
+      {% else %}
+        <p>Nenhum cliente cadastrado.</p>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>
+
