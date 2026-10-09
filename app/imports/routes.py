@@ -6,7 +6,7 @@ from sqlalchemy import select
 
 from app.auth.routes import csrf_token, login_required, require_csrf
 from app.imports.parser import parse_csv, review_rows
-from app.models import CsvImport, Event, Participant
+from app.models import CsvImport, Event, Participant, PdfTemplate, TemplateVersion
 
 
 imports_bp = Blueprint("imports", __name__)
@@ -36,7 +36,14 @@ def participants(event_id):
         if event is None:
             abort(404)
         people = db.scalars(select(Participant).where(Participant.event_id == event_id).order_by(Participant.id)).all()
-    return render_template("imports/participants.html", event=event, people=people, csrf_token=csrf_token())
+        template = db.get(PdfTemplate, event.template_id) if event.template_id else None
+        version = (db.scalar(select(TemplateVersion).where(TemplateVersion.template_id == template.id)
+                             .order_by(TemplateVersion.number.desc())) if template else None)
+        templates = (db.scalars(select(PdfTemplate).order_by(PdfTemplate.name)).all()
+                     if people and not template else [])
+    return render_template("imports/participants.html", event=event, people=people,
+                           template=template, version=version, templates=templates,
+                           csrf_token=csrf_token())
 
 
 @imports_bp.post("/events/<int:event_id>/imports")

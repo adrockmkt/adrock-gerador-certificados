@@ -20,11 +20,15 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <input type="hidden" name="request_key" value="{{ request_key }}">
             <label><input type="checkbox" name="confirmed_preview" value="yes" required> Conferi a prévia e autorizo a geração deste lote</label>
-            <button type="submit">Gerar {{ count }} certificados</button>
+            <button type="submit">Gerar {{ count }} certificado{{ 's' if count != 1 else '' }}</button>
           </form>
         {% endif %}
+      {% elif template %}
+        <p>O template <strong>{{ template.name }}</strong> está associado, mas a posição do nome ainda não foi configurada.</p>
+        <a class="action-link" href="{{ url_for('templates_pdf.edit', template_id=template.id) }}">Configurar nome no template →</a>
       {% else %}
-        <p>Associe e configure um template PDF para este evento.</p>
+        <p>Este evento ainda não tem um template PDF associado.</p>
+        <a class="action-link" href="{{ url_for('imports.participants', event_id=event.id) }}">Associar template →</a>
       {% endif %}
       {% if count == 0 %}<p><a href="{{ url_for('imports.participants', event_id=event.id) }}">Importar participantes</a> para liberar a geração.</p>{% endif %}
     </section>

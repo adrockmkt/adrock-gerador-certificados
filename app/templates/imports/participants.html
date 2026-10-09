@@ -21,9 +21,39 @@
       <h2>Importados ({{ people|length }})</h2>
       {% if people %}
         <ol class="item-list">{% for person in people %}<li>{{ person.first_name }} {{ person.last_name }}</li>{% endfor %}</ol>
-        <p><a class="action-link" href="{{ url_for('certificates.generate_page', event_id=event.id) }}">Gerar certificados →</a></p>
       {% else %}<p>Nenhum participante importado.</p>{% endif %}
     </section>
+    {% if people %}
+      <section class="panel {{ 'ready-panel' if template and version else 'prerequisite-panel' }}">
+        {% if not template %}
+          <h2>Próximo passo: associar um template PDF</h2>
+          <p>Os participantes estão importados. Escolha o modelo de certificado deste evento antes de gerar.</p>
+          {% if templates %}
+            <form method="post" action="{{ url_for('clients.assign_template', event_id=event.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <input type="hidden" name="return_to" value="participants">
+              <label for="participant-template-id">Template PDF</label>
+              <select id="participant-template-id" name="template_id" required>
+                <option value="" selected disabled>Selecione um template</option>
+                {% for item in templates %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
+              </select>
+              <button type="submit">Associar template</button>
+            </form>
+          {% else %}
+            <p>Não há templates cadastrados ainda.</p>
+            <a class="action-link" href="{{ url_for('templates_pdf.index') }}">Enviar template PDF →</a>
+          {% endif %}
+        {% elif not version %}
+          <h2>Próximo passo: configurar o nome</h2>
+          <p>O template <strong>{{ template.name }}</strong> está associado. Defina a posição do nome e salve a configuração antes de gerar.</p>
+          <a class="action-link" href="{{ url_for('templates_pdf.edit', template_id=template.id) }}">Personalizar posição do nome →</a>
+        {% else %}
+          <h2>Pronto para gerar</h2>
+          <p>Template associado: <strong>{{ template.name }}</strong> · versão {{ version.number }}.</p>
+          <a class="action-link" href="{{ url_for('certificates.generate_page', event_id=event.id) }}">Gerar certificados →</a>
+        {% endif %}
+      </section>
+    {% endif %}
   </main>
 </body>
 </html>

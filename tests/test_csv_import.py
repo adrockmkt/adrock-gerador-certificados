@@ -5,6 +5,7 @@ from pathlib import Path
 
 from app import create_app
 from app.auth.service import create_admin
+from app.models import PdfTemplate, TemplateVersion
 
 
 class CsvImportTests(unittest.TestCase):
@@ -55,12 +56,49 @@ class CsvImportTests(unittest.TestCase):
         listing = self.client.get("/events/1/participants")
         self.assertIn("José Ávila".encode(), listing.data)
         self.assertNotIn(b"jose@example.com", listing.data)
-        self.assertIn(b'Gerar certificados', listing.data)
-        self.assertIn(b'/events/1/generate', listing.data)
-        self.assertEqual(self.client.get("/events/1/generate").status_code, 200)
+        self.assertIn(b"Pr\xc3\xb3ximo passo: associar um template PDF", listing.data)
+        self.assertNotIn(b"Gerar certificados", listing.data)
+        self.assertIn(b"Enviar template PDF", listing.data)
+        generation = self.client.get("/events/1/generate")
+        self.assertIn(b"Associar template", generation.data)
         self.assertEqual(self.client.post("/imports/1/confirm", data={
             "first_col": "Nome", "last_col": "Sobrenome", "csrf_token": self.token,
         }).status_code, 409)
+
+    def test_participants_page_guides_template_association_and_configuration(self):
+        self.upload(b"Nome,Sobrenome\nMaria,Silva\n")
+        self.client.post("/imports/1/confirm", data={
+            "first_col": "Nome", "last_col": "Sobrenome", "csrf_token": self.token,
+        })
+        with self.app.extensions["db_sessionmaker"]() as db:
+            db.add(PdfTemplate(name="Certificado webinar", file_key="a" * 32 + ".pdf",
+                               sha256="0" * 64, page_width_pt=842, page_height_pt=595, rotation=0))
+            db.commit()
+
+        page = self.client.get("/events/1/participants")
+        self.assertIn(b"Certificado webinar", page.data)
+        self.assertIn(b"Associar template", page.data)
+        self.assertNotIn(b"Gerar certificados", page.data)
+        association = self.client.post("/events/1/template", data={
+            "template_id": "1", "return_to": "participants", "csrf_token": self.token,
+        })
+        self.assertEqual(association.status_code, 302)
+        self.assertIn("/events/1/participants", association.location)
+
+        page = self.client.get("/events/1/participants")
+        self.assertIn(b"configurar o nome", page.data)
+        self.assertIn(b"/templates/1/edit", page.data)
+        self.assertNotIn(b"Gerar certificados", page.data)
+        self.assertIn(b"Configurar nome no template", self.client.get("/events/1/generate").data)
+        with self.app.extensions["db_sessionmaker"]() as db:
+            db.add(TemplateVersion(template_id=1, number=1, fields=[{"key": "nome_completo"}]))
+            db.commit()
+
+        page = self.client.get("/events/1/participants")
+        self.assertIn(b"Pronto para gerar", page.data)
+        self.assertIn(b"Gerar certificados", page.data)
+        self.assertIn(b"/events/1/generate", page.data)
+        self.assertIn(b"Gerar 1 certificado", self.client.get("/events/1/generate").data)
 
     def test_duplicate_is_flagged_and_invalid_row_is_excluded(self):
         csv = "Nome,Sobrenome\nMaria,Silva\nMaria,Silva\n,SemNome\n".encode()

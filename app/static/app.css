@@ -80,6 +80,8 @@ form:not(.header-logout) > button.danger-button:hover { background: #7d1e1e; bor
 .dashboard > .muted { margin-top: 0; }
 .panel, .home-card { padding: 26px; background: linear-gradient(180deg, rgba(255,255,255,.97), rgba(255,248,239,.93)); border: 1px solid rgba(193,214,233,.9); border-radius: 17px; box-shadow: var(--shadow); }
 .panel { max-width: 780px; margin: 22px 0; }
+.prerequisite-panel { border-color: #f1d48f; background: linear-gradient(180deg, #fffdfa, #fff5e5); }
+.ready-panel { border-color: #9ed7b4; background: linear-gradient(180deg, #ffffff, #eef9f2); }
 .panel h2 { margin: 0 0 18px; font-size: 1.2rem; }
 .panel button { max-width: 250px; }
 .panel form > button { width: auto; }

@@ -165,6 +165,8 @@ def assign_template(event_id):
             abort(404)
         event.template_id = template.id
         db.commit()
+    if request.form.get("return_to") == "participants":
+        return redirect(url_for("imports.participants", event_id=event_id))
     return redirect(url_for("clients.event_detail", event_id=event_id))
 
 
