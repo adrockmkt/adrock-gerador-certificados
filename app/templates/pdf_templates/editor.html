@@ -18,10 +18,12 @@
     <section class="editor-workspace">
       <div class="editor-heading">
         <div><h1>{{ template.name }}</h1><p class="muted">Arraste os campos sobre o PDF. As medidas são salvas em pontos do documento.</p></div>
-        <button id="save-fields" type="button">Salvar configuração</button>
       </div>
       <div class="pdf-stage"><div class="pdf-page" id="pdf-page"><canvas id="pdf-canvas"></canvas><div id="field-layer"></div></div></div>
-      <p id="editor-status" role="status">Versão atual: {{ version }}</p>
+      <div class="editor-save">
+        <button id="save-fields" type="button">Salvar configuração</button>
+        <p id="editor-status" class="save-status" role="status" aria-live="polite">Versão atual: {{ version }}</p>
+      </div>
     </section>
     <aside class="editor-sidebar">
       <h2>Campos</h2>

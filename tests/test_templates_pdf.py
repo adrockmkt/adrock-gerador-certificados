@@ -91,6 +91,19 @@ class TemplateUploadTests(unittest.TestCase):
         self.client.post("/logout", data={"csrf_token": self.csrf()})
         self.assertEqual(self.client.get("/templates/1/pdf").status_code, 302)
 
+    def test_upload_leads_to_name_position_editor_and_save_is_below_pdf(self):
+        response = self.upload(make_pdf())
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("template_id=1", response.location)
+
+        templates_page = self.client.get(response.location).data
+        self.assertIn("Personalizar posição do nome".encode(), templates_page)
+        self.assertIn(b'/templates/1/edit', templates_page)
+
+        editor_page = self.client.get("/templates/1/edit").data
+        self.assertLess(editor_page.index(b'id="pdf-page"'), editor_page.index(b'id="save-fields"'))
+        self.assertIn(b'class="save-status"', editor_page)
+
     def test_illustrator_reference_download_requires_login(self):
         page = self.client.get("/templates")
         self.assertIn(b"modelo-certificado-template.ai", page.data)

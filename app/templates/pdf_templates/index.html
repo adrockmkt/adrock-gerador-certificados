@@ -10,6 +10,13 @@
   {% include 'partials/header.html' %}
   <main class="dashboard">
     <h1>Templates PDF</h1>
+    {% if created_template %}
+      <section class="next-step" role="status">
+        <strong>PDF “{{ created_template.name }}” enviado.</strong>
+        <p>Próxima etapa: escolha onde o nome do participante aparecerá no certificado.</p>
+        <a class="action-link" href="{{ url_for('templates_pdf.edit', template_id=created_template.id) }}">Personalizar posição do nome →</a>
+      </section>
+    {% endif %}
     <section class="panel">
       <h2>Referência de design</h2>
       <p>Baixe o <a href="{{ url_for('templates_pdf.illustrator_reference') }}">modelo do certificado no Illustrator (.ai)</a> para consultar ou adaptar o layout. Para gerar certificados, envie abaixo um PDF de uma página sem o nome do participante.</p>
@@ -28,7 +35,7 @@
       {% if templates %}
         <ul class="item-list">
           {% for template in templates %}
-            <li><a href="{{ url_for('templates_pdf.edit', template_id=template.id) }}">{{ template.name }}</a> · {{ template.page_width_pt|round(1) }} × {{ template.page_height_pt|round(1) }} pt · <a href="{{ url_for('templates_pdf.original_pdf', template_id=template.id) }}" target="_blank" rel="noopener">PDF de trabalho</a> · <a href="{{ url_for('templates_pdf.source_pdf', template_id=template.id) }}">PDF enviado</a></li>
+            <li><strong>{{ template.name }}</strong> · <a href="{{ url_for('templates_pdf.edit', template_id=template.id) }}">Personalizar nome</a> · {{ template.page_width_pt|round(1) }} × {{ template.page_height_pt|round(1) }} pt · <a href="{{ url_for('templates_pdf.original_pdf', template_id=template.id) }}" target="_blank" rel="noopener">PDF de trabalho</a> · <a href="{{ url_for('templates_pdf.source_pdf', template_id=template.id) }}">PDF enviado</a></li>
           {% endfor %}
         </ul>
       {% else %}

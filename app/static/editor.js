@@ -18,6 +18,18 @@ let selectedId = fields[0]?.id ?? null;
 let scale = 1;
 let page = null;
 let renderQueue = Promise.resolve();
+let editRevision = 0;
+
+function setStatus(message, tone = "neutral") {
+  status.textContent = message;
+  status.className = `save-status ${tone === "neutral" ? "" : `is-${tone}`}`;
+  status.setAttribute("role", tone === "error" ? "alert" : "status");
+}
+
+function markDirty() {
+  editRevision += 1;
+  setStatus("Alterações não salvas.");
+}
 
 const sample = { nome: "Maria", sobrenome: "Silva", nome_completo: "Maria Silva" };
 const labels = { nome: "Nome", sobrenome: "Sobrenome", nome_completo: "Nome completo" };
@@ -29,7 +41,7 @@ async function loadPdf() {
     await renderPage();
   } catch (error) {
     console.error("Falha ao carregar o template PDF no editor:", error);
-    status.textContent = "Não foi possível abrir o PDF. Atualize a página e tente novamente.";
+    setStatus("Não foi possível abrir o PDF. Atualize a página e tente novamente.", "error");
   }
 }
 
@@ -106,6 +118,7 @@ function beginDrag(event, field, box) {
     box.removeEventListener("pointermove", move);
     box.removeEventListener("pointerup", end);
     box.removeEventListener("pointercancel", end);
+    if (field.x_pt !== oldX || field.y_pt !== oldY) markDirty();
     renderFields();
   };
   box.addEventListener("pointermove", move);
@@ -161,35 +174,37 @@ for (const [control, property] of Object.entries({
       field.height_pt = Math.min(pageHeight, Math.max(1, field.height_pt));
       field.y_pt = Math.max(field.height_pt / 2, Math.min(pageHeight - field.height_pt / 2, field.y_pt));
     }
+    markDirty();
     renderFields();
   });
 }
 document.getElementById("field-lines").addEventListener("change", (event) => {
   const field = fields.find((item) => item.id === selectedId);
-  if (field) { field.max_lines = Number(event.target.value); renderFields(); }
+  if (field) { field.max_lines = Number(event.target.value); markDirty(); renderFields(); }
 });
 document.getElementById("field-color").addEventListener("change", (event) => {
   const field = fields.find((item) => item.id === selectedId);
-  if (field) { field.color = event.target.value; renderFields(); }
+  if (field) { field.color = event.target.value; markDirty(); renderFields(); }
 });
 document.getElementById("field-align").addEventListener("change", (event) => {
   const field = fields.find((item) => item.id === selectedId);
-  if (field) { field.align = event.target.value; renderFields(); }
+  if (field) { field.align = event.target.value; markDirty(); renderFields(); }
 });
 document.getElementById("field-font").addEventListener("change", (event) => {
   const field = fields.find((item) => item.id === selectedId);
   if (field) {
     field.font_family = event.target.value;
     if (field.font_family === "Helvetica") field.font_weight = "regular";
+    markDirty();
     renderFields();
   }
 });
 document.getElementById("field-weight").addEventListener("change", (event) => {
   const field = fields.find((item) => item.id === selectedId);
-  if (field) { field.font_weight = event.target.value; renderFields(); }
+  if (field) { field.font_weight = event.target.value; markDirty(); renderFields(); }
 });
 document.getElementById("add-field").addEventListener("click", () => {
-  if (fields.length >= 20) { status.textContent = "Limite de 20 campos atingido."; return; }
+  if (fields.length >= 20) { setStatus("Limite de 20 campos atingido.", "error"); return; }
   const key = document.getElementById("new-field-key").value;
   const width = Math.min(400, pageWidth - 20);
   const field = {
@@ -199,15 +214,20 @@ document.getElementById("add-field").addEventListener("click", () => {
     font_size_pt: 28, min_font_size_pt: 18, color: "#333333", align: "center",
   };
   fields.push(field);
+  markDirty();
   selectField(field.id);
 });
 document.getElementById("remove-field").addEventListener("click", () => {
   const index = fields.findIndex((item) => item.id === selectedId);
-  if (index >= 0) fields.splice(index, 1);
+  if (index >= 0) { fields.splice(index, 1); markDirty(); }
   selectedId = fields[0]?.id ?? null;
   renderFields();
 });
 document.getElementById("save-fields").addEventListener("click", async () => {
+  const button = document.getElementById("save-fields");
+  const savingRevision = editRevision;
+  button.disabled = true;
+  setStatus("Salvando configuração...");
   try {
     const response = await fetch(root.dataset.saveUrl, {
       method: "POST",
@@ -216,9 +236,15 @@ document.getElementById("save-fields").addEventListener("click", async () => {
     });
     if (!response.ok) throw new Error("save failed");
     const result = await response.json();
-    status.textContent = `Configuração salva como versão ${result.version}.`;
+    if (editRevision === savingRevision) {
+      setStatus(`Configuração salva como versão ${result.version}.`, "success");
+    } else {
+      setStatus(`Versão ${result.version} salva. Há alterações mais recentes não salvas.`);
+    }
   } catch {
-    status.textContent = "Não foi possível salvar. Confira se os campos estão dentro da página e tente novamente.";
+    setStatus("Não foi possível salvar. Confira se os campos estão dentro da página e tente novamente.", "error");
+  } finally {
+    button.disabled = false;
   }
 });
 new ResizeObserver(() => renderPage()).observe(pageElement.parentElement);

@@ -31,7 +31,10 @@ def illustrator_reference():
 def index():
     with current_app.extensions["db_sessionmaker"]() as db:
         templates = db.scalars(select(PdfTemplate).order_by(PdfTemplate.id.desc())).all()
-    return render_template("pdf_templates/index.html", templates=templates, csrf_token=csrf_token())
+    created_id = request.args.get("template_id", type=int)
+    created_template = next((template for template in templates if template.id == created_id), None)
+    return render_template("pdf_templates/index.html", templates=templates,
+                           created_template=created_template, csrf_token=csrf_token())
 
 
 @templates_bp.post("/templates")

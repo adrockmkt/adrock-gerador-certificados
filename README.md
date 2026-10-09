@@ -6,7 +6,7 @@ A interface segue a linguagem visual **Ad Rock Console UI** do projeto organizac
 
 ## Estado atual
 
-O fluxo está implementado: login, clientes e eventos, upload privado de template, editor visual, prévia PDF, importação CSV com revisão e geração de lotes. O PDF real da FIEP foi recebido e usado na conferência visual local. Há 47 testes automatizados. A aplicação está publicada em [mobiledelivery.com.br/gerador-certificados/](https://mobiledelivery.com.br/gerador-certificados/).
+O fluxo está implementado: login, clientes e eventos, upload privado de template, editor visual, prévia PDF, importação CSV com revisão e geração de lotes. O PDF real da FIEP foi recebido e usado na conferência visual local. Há 48 testes automatizados. A aplicação está publicada em [mobiledelivery.com.br/gerador-certificados/](https://mobiledelivery.com.br/gerador-certificados/).
 
 ## Instalação local
 
