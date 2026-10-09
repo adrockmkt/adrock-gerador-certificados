@@ -55,6 +55,9 @@ class CsvImportTests(unittest.TestCase):
         listing = self.client.get("/events/1/participants")
         self.assertIn("José Ávila".encode(), listing.data)
         self.assertNotIn(b"jose@example.com", listing.data)
+        self.assertIn(b'Gerar certificados', listing.data)
+        self.assertIn(b'/events/1/generate', listing.data)
+        self.assertEqual(self.client.get("/events/1/generate").status_code, 200)
         self.assertEqual(self.client.post("/imports/1/confirm", data={
             "first_col": "Nome", "last_col": "Sobrenome", "csrf_token": self.token,
         }).status_code, 409)
@@ -91,6 +94,7 @@ class CsvImportTests(unittest.TestCase):
     def test_spreadsheet_template_download_requires_login(self):
         page = self.client.get("/events/1/participants")
         self.assertIn(b"modelo-participantes.xlsx", page.data)
+        self.assertNotIn(b"Gerar certificados", page.data)
         download = self.client.get("/downloads/modelo-participantes.xlsx")
         self.assertEqual(download.status_code, 200)
         self.assertEqual(download.mimetype, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")

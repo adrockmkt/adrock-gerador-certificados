@@ -19,7 +19,9 @@
     </form>
     <section class="panel">
       <h2>Importados ({{ people|length }})</h2>
-      {% if people %}<ol class="item-list">{% for person in people %}<li>{{ person.first_name }} {{ person.last_name }}</li>{% endfor %}</ol>
+      {% if people %}
+        <ol class="item-list">{% for person in people %}<li>{{ person.first_name }} {{ person.last_name }}</li>{% endfor %}</ol>
+        <p><a class="action-link" href="{{ url_for('certificates.generate_page', event_id=event.id) }}">Gerar certificados →</a></p>
       {% else %}<p>Nenhum participante importado.</p>{% endif %}
     </section>
   </main>
