@@ -1,0 +1,10 @@
+[Unit]
+Description=Backup diário do Ad Rock Certificate Generator
+
+[Timer]
+OnCalendar=*-*-* 03:15:00
+Persistent=true
+Unit=gerador-certificados-backup.service
+
+[Install]
+WantedBy=timers.target

@@ -18,6 +18,8 @@ As variáveis de produção ficam em `/etc/adrock/gerador-certificados.env`, com
 
 Antes de recarregar o NGINX, faça cópia do vhost atual e execute `nginx -t`. Depois, confira redirecionamento, login, cookie restrito ao subcaminho, downloads privados, cabeçalhos e estado do serviço pelo domínio real.
 
+O backup local diário usa `deploy/backup-vps.sh` com um timer systemd às 03:15. Ele interrompe brevemente o serviço para arquivar SQLite e arquivos privados no mesmo estado, grava em `/var/backups/gerador-certificados` com acesso root e conserva 14 dias. Teste a extração e `PRAGMA integrity_check` em diretório temporário. Esse backup no mesmo disco não cobre a perda da VPS; configure uma cópia externa quando o destino e a política forem definidos.
+
 ## Verificações antes de publicar
 
 1. Gerar certificados de teste com o PDF real da FIEP, incluindo nomes curtos, longos e acentuados, e revisar visualmente PDF e ZIP.

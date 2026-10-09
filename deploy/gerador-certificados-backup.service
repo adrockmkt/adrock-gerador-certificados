@@ -1,0 +1,6 @@
+[Unit]
+Description=Backup local do Ad Rock Certificate Generator
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /home/adrock/apps/gerador-certificados/deploy/backup-vps.sh
