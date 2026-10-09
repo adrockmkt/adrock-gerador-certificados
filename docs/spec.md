@@ -22,6 +22,7 @@ Permitir que um administrador da Ad Rock produza certificados PDF personalizados
 - Certificados e dados pessoais não são acessíveis por URLs públicas ou por `static/`.
 - Duplicidades de nomes são sinalizadas, não descartadas automaticamente.
 - Falhas por participante são registradas e não sobrescrevem outros certificados.
+- Nomes de arquivos baixados incluem o evento e o participante e são seguros para sistemas de arquivos e ZIPs. O catálogo de certificados exige login e permite filtrar lotes por cliente.
 - Apenas um administrador operacional é necessário no MVP; todas as rotas sensíveis exigem autenticação.
 - A exclusão de um evento remove suas importações, participantes, lotes e certificados, inclusive CSV pendente, PDFs e ZIPs gerados. A exclusão de um cliente aplica a mesma regra a todos os seus eventos. Templates PDF são globais e permanecem disponíveis para reutilização.
 

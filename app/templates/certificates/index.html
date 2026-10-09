@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Certificados · Ad Rock Certificates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  {% include 'partials/header.html' %}
+  <main class="dashboard">
+    <h1>Certificados emitidos</h1>
+    <p class="muted">Encontre eventos e lotes para baixar os certificados.</p>
+    <form class="panel archive-filter" method="get" action="{{ url_for('certificates.index') }}">
+      <label for="archive-client">Filtrar por cliente</label>
+      <select id="archive-client" name="client_id">
+        <option value="">Todos os clientes</option>
+        {% for client in clients %}<option value="{{ client.id }}" {% if selected_id == client.id %}selected{% endif %}>{{ client.name }}</option>{% endfor %}
+      </select>
+      <button type="submit">Filtrar</button>
+    </form>
+    {% for client, events in groups %}
+      {% if events %}
+        <section class="panel archive-group">
+          <h2>{{ client.name }}</h2>
+          {% for event, batches in events %}
+            <div class="archive-event">
+              <h3>{{ event.title }}</h3>
+              {% if batches %}
+                <ul class="item-list">
+                  {% for batch in batches %}
+                    <li>
+                      <a href="{{ url_for('certificates.batch_detail', batch_id=batch.id) }}">Lote {{ batch.id }}</a>
+                      · {{ batch.success_count }} certificado(s) · {{ batch.error_count }} falha(s)
+                      {% if batch.zip_file_key %}· <a href="{{ url_for('certificates.download_zip', batch_id=batch.id) }}">Baixar ZIP</a>{% endif %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p class="muted">Nenhum lote criado para este evento.</p>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% else %}
+      <p>Nenhum cliente cadastrado.</p>
+    {% endfor %}
+    {% if groups and not has_events %}
+      <p>Nenhum evento encontrado para este filtro.</p>
+    {% endif %}
+  </main>
+</body>
+</html>

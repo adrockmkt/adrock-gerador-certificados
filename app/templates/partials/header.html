@@ -7,6 +7,7 @@
     <a href="{{ url_for('home') }}">Painel</a>
     <a href="{{ url_for('clients.index') }}">Clientes</a>
     <a href="{{ url_for('templates_pdf.index') }}">Templates</a>
+    <a href="{{ url_for('certificates.index') }}">Certificados</a>
   </nav>
   <form class="header-logout" method="post" action="{{ url_for('auth.logout') }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">

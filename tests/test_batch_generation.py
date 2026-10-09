@@ -84,14 +84,60 @@ class BatchGenerationTests(unittest.TestCase):
         self.assertIn(b"2 certificados gerados", detail.data)
         individual = self.client.get("/certificates/1/pdf")
         self.assertEqual(individual.status_code, 200)
+        self.assertIn("certificado-ga4-maria-silva-1.pdf", individual.headers["Content-Disposition"])
         self.assertIn("Maria Silva", PdfReader(io.BytesIO(individual.data)).pages[0].extract_text())
         individual.close()
         zipped = self.client.get("/batches/1/zip")
         self.assertEqual(zipped.status_code, 200)
+        self.assertIn("certificados-ga4-lote-1.zip", zipped.headers["Content-Disposition"])
         with zipfile.ZipFile(io.BytesIO(zipped.data)) as archive:
             self.assertIsNone(archive.testzip())
-            self.assertEqual(len(archive.namelist()), 2)
+            self.assertEqual(archive.namelist(), [
+                "certificado-ga4-maria-silva-1.pdf",
+                "certificado-ga4-jose-avila-2.pdf",
+            ])
         zipped.close()
+
+    def test_old_zip_names_are_updated_when_downloaded(self):
+        self.import_people("Nome,Sobrenome\nMaria,Silva\n")
+        self.generate()
+        path = Path(self.app.config["PRIVATE_STORAGE_DIR"]) / "generated/1/certificados.zip"
+        with zipfile.ZipFile(path) as original:
+            pdf_data = original.read(original.namelist()[0])
+        with zipfile.ZipFile(path, "w") as legacy:
+            legacy.writestr("certificado-1.pdf", pdf_data)
+        self.client.post("/events/1/edit", data={"title": "Webinar / 1", "csrf_token": self.token})
+
+        response = self.client.get("/batches/1/zip")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("certificados-webinar-1-lote-1.zip", response.headers["Content-Disposition"])
+        with zipfile.ZipFile(io.BytesIO(response.data)) as archive:
+            self.assertEqual(archive.namelist(), ["certificado-webinar-1-maria-silva-1.pdf"])
+            self.assertIsNone(archive.testzip())
+        response.close()
+        individual = self.client.get("/certificates/1/pdf")
+        self.assertIn("certificado-webinar-1-maria-silva-1.pdf", individual.headers["Content-Disposition"])
+        individual.close()
+
+    def test_certificate_catalog_filters_clients_and_shows_batch_downloads(self):
+        self.import_people("Nome,Sobrenome\nMaria,Silva\n")
+        self.generate()
+        self.client.post("/clients", data={"name": "Outro cliente", "csrf_token": self.token})
+        self.client.post("/clients/2/events", data={"title": "Webinar 2", "csrf_token": self.token})
+
+        page = self.client.get("/certificates")
+        self.assertIn(b"Certificados emitidos", page.data)
+        self.assertIn(b"FIEP", page.data)
+        self.assertIn(b"Outro cliente", page.data)
+        self.assertIn(b"Lote 1", page.data)
+        self.assertIn(b"/batches/1/zip", page.data)
+
+        filtered = self.client.get("/certificates?client_id=1")
+        self.assertIn(b"FIEP", filtered.data)
+        self.assertIn(b"Lote 1", filtered.data)
+        self.assertNotIn(b"Webinar 2", filtered.data)
+        self.assertEqual(self.client.get("/certificates?client_id=999").status_code, 404)
+        self.assertEqual(self.client.get("/certificates?client_id=invalid").status_code, 400)
 
     def test_repeated_submission_does_not_create_second_batch(self):
         self.import_people("Nome,Sobrenome\nMaria,Silva\n")
@@ -118,6 +164,7 @@ class BatchGenerationTests(unittest.TestCase):
         }).status_code, 400)
         self.generate()
         self.client.post("/logout", data={"csrf_token": self.token})
+        self.assertEqual(self.client.get("/certificates").status_code, 302)
         self.assertEqual(self.client.get("/batches/1/zip").status_code, 302)
         self.assertEqual(self.client.get("/certificates/1/pdf").status_code, 302)
 

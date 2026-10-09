@@ -94,6 +94,12 @@ form:not(.header-logout) > button.danger-button:hover { background: #7d1e1e; bor
 .home-card-action { margin-top: auto; color: #b35700; font-size: .9rem; font-weight: 700; }
 .item-list { margin: 0; padding-left: 20px; }
 .item-list li { margin: 12px 0; }
+.archive-filter { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 8px 12px; }
+.archive-filter label { grid-column: 1 / -1; margin: 0; }
+.archive-filter button { margin: 0 !important; }
+.archive-group { max-width: 950px; }
+.archive-event { padding: 12px 0; border-top: 1px solid #dbe2e8; }
+.archive-event h3 { margin: 0 0 8px; font-size: 1.05rem; }
 .editor-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; width: min(calc(100% - 48px), 1280px); margin: 24px auto 60px; }
 .editor-workspace { min-width: 0; padding: 22px; background: rgba(255,255,255,.9); border: 1px solid rgba(193,214,233,.9); border-radius: 17px; box-shadow: var(--shadow); }
 .editor-heading { margin-bottom: 18px; }
