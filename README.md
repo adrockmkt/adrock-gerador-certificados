@@ -6,7 +6,7 @@ A interface segue a linguagem visual **Ad Rock Console UI** do projeto organizac
 
 ## Estado atual
 
-O fluxo local está implementado: login, clientes e eventos, upload privado de template, editor visual, prévia PDF, importação CSV com revisão e geração de lotes. O PDF real da FIEP foi recebido e usado na conferência visual local. Há 46 testes automatizados. O deploy na DigitalOcean não foi executado.
+O fluxo está implementado: login, clientes e eventos, upload privado de template, editor visual, prévia PDF, importação CSV com revisão e geração de lotes. O PDF real da FIEP foi recebido e usado na conferência visual local. Há 47 testes automatizados. A aplicação está publicada em [mobiledelivery.com.br/gerador-certificados/](https://mobiledelivery.com.br/gerador-certificados/).
 
 ## Instalação local
 
@@ -45,6 +45,8 @@ PDFs horizontais de proporção A4 exportados em tamanho muito pequeno são ampl
 Todos os documentos e dados ficam atrás de login. Há proteção CSRF, hash de senha, limitação de tentativas de login, cookie de sessão protegido e cabeçalhos de segurança. PDFs e CSVs não são servidos por `static/`. O CSV original é removido após confirmação; participantes e certificados emitidos permanecem até exclusão administrativa conforme a política de retenção que ainda será definida.
 
 Para produção, configure `SESSION_COOKIE_SECURE=1`, HTTPS no proxy, `TRUSTED_HOSTS`, um `SECRET_KEY` persistente, permissões restritas em `instance/` ou no diretório privado e backups consistentes do banco e dos PDFs. Execute com um servidor WSGI, como Gunicorn, instalado com `pip install -e '.[production]'`. **Não use `flask run` em produção.** O app cria as tabelas iniciais automaticamente em uma instalação vazia; alterações futuras do esquema exigirão migrações versionadas. Antes do deploy, teste backup/restauração, desempenho com arquivos reais e a política de retenção. Veja [prontidão de produção](docs/production-readiness.md).
+
+Na VPS atual, o código fica em `/home/adrock/apps/gerador-certificados`, os dados em `/var/lib/gerador-certificados` e o backup local em `/var/backups/gerador-certificados`. O NGINX encaminha somente o subcaminho do gerador ao Gunicorn em `127.0.0.1:8012`. A senha inicial do administrador foi gerada no servidor e guardada em `/root/gerador-certificados-bootstrap.txt`, com acesso exclusivo ao root. Após guardá-la em um gerenciador de senhas, remova esse arquivo. A cópia externa dos backups e a política de retenção dos certificados ainda precisam ser definidas.
 
 Testes:
 

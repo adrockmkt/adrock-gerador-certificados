@@ -32,4 +32,4 @@ O backup local diário usa `deploy/backup-vps.sh` com um timer systemd às 03:15
 
 ## Limites atuais
 
-O sistema não foi implantado na DigitalOcean. Ainda faltam medição com PDF real, política de retenção e migrações para evoluções de esquema. O app cria somente o esquema inicial de uma instalação vazia.
+O sistema foi implantado na VPS da DigitalOcean em `/gerador-certificados/`. Ainda faltam cópia externa dos backups, medição de lotes com PDF real, política de retenção e migrações para evoluções de esquema. O app cria somente o esquema inicial de uma instalação vazia.
